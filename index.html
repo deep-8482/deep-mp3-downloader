@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MP3 Juice Clone</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 40px; }
+    input, button { padding: 10px; width: 300px; margin: 10px; }
+  </style>
+</head>
+<body>
+  <h1>🎵 MP3 / MP4 Downloader</h1>
+  <input id="url" type="text" placeholder="Enter YouTube URL"><br>
+  <button onclick="download('mp3')">Download MP3</button>
+  <button onclick="download('mp4')">Download MP4</button>
+  <div id="result"></div>
+
+  <script>
+    async function download(type) {
+      const url = document.getElementById("url").value;
+      const response = await fetch('https://deep-8482.github.io/deep-mp3-downloader/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ url, type })
+      });
+      const data = await response.json();
+      if (data.download_url) {
+        document.getElementById('result').innerHTML = `<a href="${data.download_url}">Download ${type.toUpperCase()}</a>`;
+      } else {
+        document.getElementById('result').innerText = "Download failed.";
+      }
+    }
+  </script>
+</body>
+</html>
