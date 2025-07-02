@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>MP3 Juice Clone</title>
+  <meta charset="UTF-8">
+  <title>MP3/MP4 Downloader</title>
   <style>
-    body { font-family: sans-serif; text-align: center; padding: 40px; }
-    input, button { padding: 10px; width: 300px; margin: 10px; }
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+    input, button { padding: 10px; width: 300px; margin: 10px; font-size: 16px; }
   </style>
 </head>
 <body>
@@ -12,21 +13,34 @@
   <input id="url" type="text" placeholder="Enter YouTube URL"><br>
   <button onclick="download('mp3')">Download MP3</button>
   <button onclick="download('mp4')">Download MP4</button>
-  <div id="result"></div>
+  <p id="result"></p>
 
   <script>
     async function download(type) {
       const url = document.getElementById("url").value;
-      const response = await fetch('https://mp3-downloader-backend-nfob.onrender.com/', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+      if (!url) {
+        alert("Please enter a YouTube URL.");
+        return;
+      }
+
+      document.getElementById("result").innerText = "Please wait...";
+
+      const response = await fetch("https://mp3-downloader-backend-nfob.onrender.com/download", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url, type })
       });
+
       const data = await response.json();
+
       if (data.download_url) {
-        document.getElementById('result').innerHTML = `<a href="${data.download_url}">Download ${type.toUpperCase()}</a>`;
+        const link = document.createElement("a");
+        link.href = data.download_url;
+        link.download = "";
+        link.click();
+        document.getElementById("result").innerText = "Download started!";
       } else {
-        document.getElementById('result').innerText = "Download failed.";
+        document.getElementById("result").innerText = "Download failed.";
       }
     }
   </script>
